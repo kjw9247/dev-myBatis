@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo">
+	<select id="noticeList" resultType="java.util.Map" parameterType="map">
+		SELECT n_no, n_title, n_content FROM notice
+	</select>
+	<insert id="noticeInsert" parameterType="com.example.demo.vo.NoticeVO">
+    INSERT INTO notice(n_no, n_title, n_content) VALUES(#{n_no}, #{n_title}, #{n_content})
+  </insert>
+  <update id="noticeUpdate" parameterType="com.example.demo.vo.NoticeVO">
+    UPDATE notice
+       SET n_title = #{n_title}
+          ,n_content= #{n_content}
+     WHERE n_no = #{n_no}
+  </update>
+  <!-- delete from test where t_no=? -->
+  <delete id="noticeDelete" parameterType="int">
+    DELETE FROM test WHERE n_no = #{value}
+  </delete>
+</mapper>
+
+<!-- SAXException, ParserException -> xml파일 -->
