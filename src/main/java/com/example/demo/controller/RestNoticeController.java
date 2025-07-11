@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +49,7 @@ public class RestNoticeController {
       return temp;
     }// end of noticeDetail
     @PostMapping("noticeInsert")
-    public String noticeInsert(NoticeVO nvo)
+    public String noticeInsert(@RequestBody NoticeVO nvo)
     {
       log.info("noticeInsert");
       int result = 0;
@@ -56,7 +57,7 @@ public class RestNoticeController {
       return String.valueOf(result);
     }
     @PutMapping("noticeUpdate")
-    public String noticeUpdate(NoticeVO nvo)
+    public String noticeUpdate(@RequestBody NoticeVO nvo)
     {
       log.info("noticeUpdate");
       int result = 0;
