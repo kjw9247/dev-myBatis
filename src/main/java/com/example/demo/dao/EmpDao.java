@@ -1,0 +1,45 @@
+package com.example.demo.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import lombok.extern.log4j.Log4j2;
+// Dao클래스와 오라클 서버 사이에는 Mybatis Layer 필요
+
+@Log4j2
+@Repository
+public class EmpDao {
+  @Autowired
+  private SqlSessionTemplate sqlSessionTemplate;
+
+  public List<Map<String, Object>> empList(Map<String, Object> pmap) {
+    List<Map<String, Object>> list = null;
+    list = sqlSessionTemplate.selectList("empList", pmap);
+    return list;
+  }
+
+  public int empInsert(Map<String ,Object> pmap) {
+    int result = 0;
+    result = sqlSessionTemplate.insert("empInsert", pmap);
+    return result;
+  }
+
+  public int empUpdate(Map<String, Object> pmap) {
+    int result = 0;
+    result = sqlSessionTemplate.update("empUpdate", pmap);
+    return result;
+  }
+
+  public int empDelete(Map<String, Object> pmap) {
+    int result = 0;
+    int empno = 0;
+    if(pmap.containsKey("empno")){
+      empno = Integer.parseInt(pmap.get("empno").toString());
+    }
+    result = sqlSessionTemplate.delete("empDelete", empno);
+    return result;
+  }
+}
