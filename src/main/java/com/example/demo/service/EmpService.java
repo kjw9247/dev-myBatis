@@ -1,11 +1,18 @@
 package com.example.demo.service;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dao.EmpDao;
 import com.example.demo.vo.EmpVO;
@@ -47,4 +54,39 @@ public class EmpService {
     result = empDao.empDelete(pmap);
     return result;
   }
+
+  public String imageUpload(MultipartFile image) {
+      Map<String,Object> map = new HashMap<>();
+      String savePath = "D:\\dev_lab\\07.myBatis\\dev-mybatis\\src\\main\\webapp\\pds";
+      String filename = null;
+      String fullPath = null;
+      //이미지 파일이 존재하면....
+      //만일 같은 이름의 파일이 존재하면 안되니까.... 예방코드 작성
+      if(image!=null && !image.isEmpty()){
+          SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+          Calendar time = Calendar.getInstance();
+          filename = sdf.format(time.getTime())+"-"+image.getOriginalFilename().replaceAll(" ","-");
+          fullPath = savePath+"\\"+filename;
+          try {
+              // File객체는 파일명을 객체로 만들어주는 클래스이다 
+              File f = new File(fullPath);
+              // 위에서 File객체는 파일명만 생성할 뿐 내용까지 포함되는 건 아니다
+              byte[] bytes = image.getBytes();
+              // OutputStream을 생성하여 파일객체에 읽어들인 내용들을 써준다
+              BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
+              out.write(bytes);
+              // 입출력 관련 클래스는 사용후 반드시 닫아준다
+              out.close();
+              // 파일 처리하는 경우 - 추가 파일 정보가 필요할 때
+              // 파일 크기
+              double size = Math.floor(filename.length()/(1024.0*1024.0)*10/10);
+              log.info(size);
+              map.put("filename",filename);
+              map.put("filesize",size);
+          }catch (Exception e){
+              e.printStackTrace();
+          }
+      }//end of if
+      return filename;
+  }//imageUpload
 }
