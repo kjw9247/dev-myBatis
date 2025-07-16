@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +29,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/emp/*")
 public class RestEmpController {
+    @Value("${uploadPath}")
+    private String uploadPath;
     @Autowired
     private EmpService empService;
     //이미지 업로드 하기
@@ -35,10 +38,12 @@ public class RestEmpController {
     public String imageUpload(@RequestParam(value="image") MultipartFile image) {
         log.info("imageUpload");
         log.info("image : " + image);
+        //리액트에서 요청된 이미지 파일을 톰캣 서버에 pds폴더에 업로드 처리함
         String filename = empService.imageUpload(image);
-        return "filename";
+        return filename;
     }
-    //이미지 읽어오기
+    //이미지 읽어오기 - Quill Editor 이미지 미리보기용
+    // http://localhost:8000/emp/imageGet?imageName=man.png
     @GetMapping("imageGet")
     public String imageGet(HttpServletRequest req, HttpServletResponse res) {
         log.info("imageGet");
@@ -82,12 +87,15 @@ public class RestEmpController {
         return null;
     }
     //이미지 다운로드
+    // imageName키값은 스프링에서 request.getParameter가 아니어도 사용자가 입력한 값을 읽어 올 수 있다
+    // emp.photo값은 오라클 서버에서 select한 결과값이다
+    // http://localhost:8000/emp/imageDownload?imageName=emp.ephoto
     @GetMapping("imageDownload")
     public ResponseEntity<Resource> imageDownload(@RequestParam(value="imageName") String imageName) {
         log.info("imageDownload");
-        String filePath = "D:\\dev_lab\\07.myBatis\\dev-mybatis\\src\\main\\webapp\\pds";
+        // String filePath = "D:\\dev_lab\\07.myBatis\\dev-mybatis\\src\\main\\webapp\\pds";
         try {
-            File file = new File(filePath, URLDecoder.decode(imageName, "UTF-8"));
+            File file = new File(uploadPath, URLDecoder.decode(imageName, "UTF-8"));
             HttpHeaders header = new HttpHeaders();
             header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + imageName);
             header.add("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -124,8 +132,12 @@ public class RestEmpController {
     @GetMapping("empDetail")
     public String empDetail(@RequestParam Map<String,Object> pmap){
         log.info("empDetail");
-        log.info(pmap);
-        return "empDetail";
+        log.info(pmap);//empno=7566
+        Map<String,Object> rmap = null;
+        rmap = empService.empDetail(pmap);
+        Gson gson = new Gson();
+        String temp = gson.toJson(rmap);
+        return temp;
     }
     //Post나 Put은 브라우저로 부터 인터셉트를 당하지 않음
     //입력 - 리턴과 파라미터
