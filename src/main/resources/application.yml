@@ -1,5 +1,5 @@
 uploadPath:
-  D:\dev_lab\07.myBatis\dev-mybatis2\src\main\webapp\pds\
+  D:\dev_lab\07.myBatis\dev-mybatis\src\main\webapp\pds\
 server:
   port: 8000
   tomcat:    

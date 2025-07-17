@@ -1,6 +1,5 @@
 package com.example.demo.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -19,13 +18,11 @@ public class TestDao {
     log.info("testList");
     List<TestVO> list = null;
     list = sqlSessionTemplate.selectList("testList", null);
-    List<TestVO> list2 = new ArrayList<>();
-    return list2;
+    return list;
   }
   public int testInsert(TestVO tvo) {
-    log.info("testInsert");
     int result = 0;
-    result = sqlSessionTemplate.insert("testInsert", tvo);
+    result = sqlSessionTemplate.insert("testInsert",tvo);
     return result;
   }
   public int testUpdate(TestVO tvo) {

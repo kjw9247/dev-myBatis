@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.service.TestService;
 import lombok.extern.log4j.Log4j2;
@@ -30,16 +31,16 @@ public class TestController {
     String temp = g.toJson(list);
     return temp;
   }
-  // RestAPI에서 POST는 브라우저를 통해서 단위테스트가 불가함
-  // insert into test values(1, "제목1", "내용1")
+  //Rest API에서 post는 브라우저를 통해서 단위테스트가 불가함 
+  //insert into test values(1,'제목1','내용1')
   @PostMapping("testInsert")
   public String testInsert(TestVO tvo){
     log.info(tvo.getT_no()+", "+tvo.getT_title()+", "+tvo.getT_content());
-    int result = 0; // 1이면 입력성공 0이면 입력실패
+    int result = 0;//1이면 입력 성공 0이면 입력 실패
     result = testService.testInsert(tvo);
     return String.valueOf(result);
   }
-  // update test set t_title=?, t_content=? where t_no=?
+  //update test set t_title=?, t_content=? where t_no=?
   @PutMapping("testUpdate")
   public String testUpdate(TestVO tvo){
     log.info("testUpdate");
@@ -47,8 +48,8 @@ public class TestController {
     result = testService.testUpdate(tvo);
     return String.valueOf(result);
   }
-  @DeleteMapping("testDelete/{t_no}")
-  public int testDelete(@PathVariable int t_no){
+  @DeleteMapping("testDelete")
+  public int testDelete(@RequestParam int t_no){
     log.info("testDelete : " + t_no);
     int result = 0;
     result = testService.testDelete(t_no);

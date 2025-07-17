@@ -33,6 +33,16 @@ public class RestEmpController {
     private String uploadPath;
     @Autowired
     private EmpService empService;
+    //페이징 처리 실습 메서드 선언 - 오라클 : paging
+    @GetMapping("pagingList")
+    public String pagingList(){
+        List<Map<String, Object>> list = null;
+        list = empService.pagingList();
+        Gson gson = new Gson();
+        String temp = gson.toJson(list);
+        return temp;
+    }
+
     //이미지 업로드 하기
     @PostMapping("imageUpload")
     public String imageUpload(@RequestParam(value="image") MultipartFile image) {
@@ -87,13 +97,12 @@ public class RestEmpController {
         return null;
     }
     //이미지 다운로드
-    // imageName키값은 스프링에서 request.getParameter가 아니어도 사용자가 입력한 값을 읽어 올 수 있다
-    // emp.photo값은 오라클 서버에서 select한 결과값이다
-    // http://localhost:8000/emp/imageDownload?imageName=emp.ephoto
+    //imageName키값은 스프링에서 request.getParameter가 아니어도 사용자가 입력한 값을 읽어올 수 있다.
+    //emp.ephoto값은 오라클 서버에서 select한 결과값이다.
+    //http://localhost:8000/emp/imageDownload?imageName=emp.ephoto
     @GetMapping("imageDownload")
     public ResponseEntity<Resource> imageDownload(@RequestParam(value="imageName") String imageName) {
         log.info("imageDownload");
-        // String filePath = "D:\\dev_lab\\07.myBatis\\dev-mybatis\\src\\main\\webapp\\pds";
         try {
             File file = new File(uploadPath, URLDecoder.decode(imageName, "UTF-8"));
             HttpHeaders header = new HttpHeaders();
